@@ -10,7 +10,7 @@ CORS(app)  # Permite requisições de outros domínios (do seu site)
 # (Passe sua chave de API como variável de ambiente no Cloud Run)
 try:
     genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-    model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel('gemini-1.0-pro')
 except Exception as e:
     print(f"Erro ao configurar a API do Gemini: {e}")
     model = None
