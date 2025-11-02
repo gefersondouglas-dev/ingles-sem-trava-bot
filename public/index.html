@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inglês Sem Trava Bot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <h1>Inglês Sem Trava Bot</h1>
+        <div class="controls">
+            <div class="dialeto-select">
+                <input type="radio" id="en-US" name="dialeto" value="en-US" checked>
+                <label for="en-US">🇺🇸 Americano</label>
+                <input type="radio" id="en-GB" name="dialeto" value="en-GB">
+                <label for="en-GB">🇬🇧 Britânico</label>
+            </div>
+            <button id="theme-toggle">☀️</button>
+        </div>
+    </nav>
+
+    <main>
+        <div class="mode-select">
+            <button id="btn-escrever" class="active">Escrever</button>
+            <button id="btn-falar">Falar</button>
+        </div>
+
+        <div id="input-area-text" class="input-wrapper">
+            <textarea id="text-input" placeholder="Digite seu texto em inglês aqui..."></textarea>
+            <button id="analyze-text-btn">Analisar Texto</button>
+        </div>
+
+        <div id="input-area-speech" class="input-wrapper" style="display: none;">
+            <button id="record-btn" class="mic-btn">
+                <span class="mic-icon">🎤</span>
+                <span class="mic-text">Clique para Falar</span>
+            </button>
+            <p id="mic-status"></p>
+        </div>
+
+        <div id="loading" style="display: none;">Analisando...</div>
+        <div id="result-container" style="display: none;">
+            <h3>Análise</h3>
+            <div class="score-circle">
+                <span id="score">0%</span>
+            </div>
+            <h4>Correção Sugerida:</h4>
+            <p id="corrigido"></p>
+            <h4>Explicação:</h4>
+            <p id="explicacao"></p>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
