@@ -139,9 +139,14 @@ def analisar():
             return jsonify(resultado)
 
         except Exception as e:
-            msg = str(e)[:150]
-            erros.append(f"{modelo}: {msg}")
-            print(f"Falha com {modelo}: {msg}")
+            msg = str(e)
+            print(f"Falha com {modelo}: {msg[:150]}")
+            # Limite diário da conta: não adianta tentar outros modelos
+            if "free-models-per-day" in msg:
+                return jsonify({
+                    "erro": "Limite diário de análises gratuitas atingido. Tente novamente amanhã."
+                }), 429
+            erros.append(f"{modelo}: {msg[:150]}")
 
     return jsonify({"erro": "Todos os modelos falharam. " + " | ".join(erros)}), 502
 
