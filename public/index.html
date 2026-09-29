@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inglês Sem Trava</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Inglês Sem Trava</h1>
+    <div class="tools">
+      <div class="seg" role="radiogroup" aria-label="Dialeto">
+        <input type="radio" id="us" name="dialeto" value="en-US" checked><label for="us">🇺🇸 Americano</label>
+        <input type="radio" id="gb" name="dialeto" value="en-GB"><label for="gb">🇬🇧 Britânico</label>
+      </div>
+      <div class="swatches" id="swatches" aria-label="Cor do tema">
+        <button data-accent="blue" title="Azul"></button>
+        <button data-accent="green" title="Verde"></button>
+        <button data-accent="purple" title="Roxo"></button>
+        <button data-accent="orange" title="Laranja"></button>
+      </div>
+      <button id="theme-toggle" class="icon" title="Claro/escuro">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="modes">
+      <button id="mode-write" class="on">Escrever</button>
+      <button id="mode-speak">Falar</button>
+    </div>
+
+    <section id="write">
+      <textarea id="text-input" maxlength="500" placeholder="Escreva sua frase em inglês…"></textarea>
+      <div class="row"><span id="counter">0/500</span></div>
+      <button id="analyze" class="primary">Analisar texto</button>
+    </section>
+
+    <section id="speak" hidden>
+      <button id="record" class="mic">
+        <span class="mic-icon">🎤</span>
+        <span id="mic-text">Toque para falar</span>
+      </button>
+    </section>
+
+    <div id="loading" hidden>Analisando…</div>
+
+    <article id="result" hidden>
+      <div class="score"><span id="score">0</span></div>
+      <h3>Versão corrigida</h3>
+      <p id="corrigido"></p>
+      <div class="actions">
+        <button id="listen">🔊 Ouvir</button>
+        <button id="copy">📋 Copiar</button>
+      </div>
+      <h3>Explicação</h3>
+      <p id="explicacao"></p>
+      <p id="error" class="error" hidden></p>
+    </article>
+
+    <section id="history-box" hidden>
+      <div class="row"><h3>Últimas análises</h3><button id="clear" class="link">Limpar</button></div>
+      <ul id="history"></ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
