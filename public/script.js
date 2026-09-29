@@ -109,30 +109,72 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => $('copy').textContent = '📋 Copiar', 1500);
   };
 
-  // ---------- Reconhecimento de voz ----------
+    // ---------- Reconhecimento de voz ----------
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (SR) {
     const rec = new SR();
-    let gravando = false;
-    rec.continuous = false; rec.interimResults = false;
-    const parar = () => { gravando = false; recordBtn.classList.remove('recording'); micText.textContent = 'Toque para falar'; };
+    let gravando = false;      // true = você está gravando (até tocar para parar)
+    let finalTexto = '';       // tudo o que já foi entendido
+    let langGravacao = 'en-US';
+
+    rec.continuous = true;     // não para sozinho quando você faz uma pausa
+    rec.interimResults = true; // mostra o texto enquanto você fala (sem analisar)
+
+    const visual = (on) => {
+      recordBtn.classList.toggle('recording', on);
+      micText.textContent = on ? 'Ouvindo… toque para parar' : 'Toque para falar';
+    };
 
     recordBtn.onclick = () => {
-      if (gravando) return rec.stop();
-      rec.lang = dialeto();
-      result.hidden = true;
-      rec.start();
-      gravando = true;
-      recordBtn.classList.add('recording');
-      micText.textContent = 'Ouvindo… toque para parar';
+      if (!gravando) {
+        finalTexto = '';
+        textInput.value = '';
+        counter.textContent = '0/500';
+        langGravacao = dialeto();
+        rec.lang = langGravacao;
+        result.hidden = true;
+        gravando = true;
+        visual(true);
+        rec.start();
+      } else {
+        gravando = false;  // foi você quem parou
+        visual(false);
+        rec.stop();        // isso dispara o onend, que faz a análise
+      }
     };
+
+    // Só atualiza o texto na tela. Não analisa nada aqui.
     rec.onresult = (e) => {
-      const fala = e.results[0][0].transcript;
-      textInput.value = fala; counter.textContent = `${fala.length}/500`;
-      analisar(fala, rec.lang);
+      let parcial = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalTexto += t + ' ';
+        else parcial += t;
+      }
+      const mostrado = (finalTexto + parcial).trim();
+      textInput.value = mostrado;
+      counter.textContent = `${mostrado.length}/500`;
     };
-    rec.onend = parar;
-    rec.onerror = (e) => { parar(); micText.textContent = e.error === 'not-allowed' ? 'Permita o microfone no navegador' : 'Erro ao gravar. Tente de novo.'; };
+
+    rec.onend = () => {
+      if (gravando) {
+        // O navegador parou sozinho (silêncio longo): volta a ouvir
+        try { rec.start(); } catch {}
+        return;
+      }
+      // Você parou: agora sim, analisa a frase inteira
+      const fala = (finalTexto.trim() || textInput.value.trim()).slice(0, 500);
+      if (fala) analisar(fala, langGravacao);
+    };
+
+    rec.onerror = (e) => {
+      if (e.error === 'no-speech' || e.error === 'aborted') return; // o onend cuida
+      gravando = false;
+      visual(false);
+      micText.textContent = e.error === 'not-allowed'
+        ? 'Permita o microfone no navegador'
+        : 'Erro ao gravar. Tente de novo.';
+    };
   } else {
     $('mode-speak').disabled = true;
     $('mode-speak').title = 'Use o Chrome ou Edge para falar';
